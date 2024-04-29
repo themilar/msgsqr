@@ -49,5 +49,23 @@ func (m *MessageModel) Get(id int) (*Message, error) {
 	return mess, nil
 }
 func (m *MessageModel) Latest() ([]*Message, error) {
-	return nil, nil
+	statement := `SELECT id,title,content,created FROM message ORDER BY id DESC LIMIT 10`
+	rows, err := m.DB.Query(statement)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	messages := []*Message{}
+	for rows.Next() {
+		mess := &Message{}
+		err := rows.Scan(&mess.ID, &mess.Title, &mess.Content, &mess.Created)
+		if err != nil {
+			return nil, err
+		}
+		messages = append(messages, mess)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return messages, nil
 }

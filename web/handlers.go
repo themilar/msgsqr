@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -16,23 +15,31 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	files := []string{
-		"./ui/templates/base.html",
-		"./ui/templates/pages/home.html",
-		"./ui/templates/partials/nav.html",
-	}
-	t, err := template.ParseFiles(files...)
-
+	messages, err := app.messages.Latest()
 	if err != nil {
-		app.errorLog.Println(err)
 		app.serverError(w, err)
 		return
 	}
-	err = t.ExecuteTemplate(w, "base", nil)
-	if err != nil {
-		app.errorLog.Print(err)
-		app.serverError(w, err)
+	for _, message := range messages {
+		fmt.Fprintf(w, "%+v\n", message)
 	}
+	// files := []string{
+	// 	"./ui/templates/base.html",
+	// 	"./ui/templates/pages/home.html",
+	// 	"./ui/templates/partials/nav.html",
+	// }
+	// t, err := template.ParseFiles(files...)
+
+	// if err != nil {
+	// 	app.errorLog.Println(err)
+	// 	app.serverError(w, err)
+	// 	return
+	// }
+	// err = t.ExecuteTemplate(w, "base", nil)
+	// if err != nil {
+	// 	app.errorLog.Print(err)
+	// 	app.serverError(w, err)
+	// }
 }
 func (app *application) messageDetail(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
