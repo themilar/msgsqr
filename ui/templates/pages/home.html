@@ -1,6 +1,22 @@
 {{define "title"}}Home{{end}}
-
 {{define "main"}}
-<h2>Latest messages</h2>
-<p>There's nothing new to see here</p>
+<h2>Latest Messages</h2>
+{{if .Messages}}
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Created</th>
+        <th>ID</th>
+    </tr>
+    {{range .Messages}}
+    <tr>
+        <td><a href='/message/detail?id={{.ID}}'>{{.Title}}</a></td>
+        <td>{{{{.Created.Hour }}:{{.Created.Minute}} }}</td>
+        <td>#{{.ID}}</td>
+    </tr>
+    {{end}}
+</table>
+{{else}}
+<p>There's nothing to see here... yet!</p>
+{{end}}
 {{end}}

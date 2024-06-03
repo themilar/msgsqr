@@ -7,10 +7,11 @@ import (
 )
 
 type Message struct {
-	ID      string
-	Title   string
-	Content string
-	Created time.Time
+	ID        string
+	Title     string
+	Content   string
+	Created   time.Time
+	CreatedAt time.Time
 }
 
 type MessageModel struct {
@@ -49,7 +50,7 @@ func (m *MessageModel) Get(id int) (*Message, error) {
 	return mess, nil
 }
 func (m *MessageModel) Latest() ([]*Message, error) {
-	statement := `SELECT id,title,content,created FROM message ORDER BY id DESC LIMIT 10`
+	statement := `SELECT id,title,content,created,created_at FROM message ORDER BY id DESC LIMIT 10`
 	rows, err := m.DB.Query(statement)
 	if err != nil {
 		return nil, err
@@ -58,7 +59,7 @@ func (m *MessageModel) Latest() ([]*Message, error) {
 	messages := []*Message{}
 	for rows.Next() {
 		mess := &Message{}
-		err := rows.Scan(&mess.ID, &mess.Title, &mess.Content, &mess.Created)
+		err := rows.Scan(&mess.ID, &mess.Title, &mess.Content, &mess.Created, &mess.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
