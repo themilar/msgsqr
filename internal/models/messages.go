@@ -35,9 +35,9 @@ func (m *MessageModel) Insert(title, content string) (int, error) {
 }
 
 func (m *MessageModel) Get(id int) (*Message, error) {
-	statement := `SELECT id,title,content,created FROM message WHERE id=$1`
+	statement := `SELECT id,title,content,created_at FROM message WHERE id=$1`
 	mess := &Message{}
-	err := m.DB.QueryRow(statement, id).Scan(&mess.ID, &mess.Title, &mess.Content, &mess.Created)
+	err := m.DB.QueryRow(statement, id).Scan(&mess.ID, &mess.Title, &mess.Content, &mess.CreatedAt)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -50,7 +50,7 @@ func (m *MessageModel) Get(id int) (*Message, error) {
 	return mess, nil
 }
 func (m *MessageModel) Latest() ([]*Message, error) {
-	statement := `SELECT id,title,content,created,created_at FROM message ORDER BY id DESC LIMIT 10`
+	statement := `SELECT id,title,content,created FROM message ORDER BY id DESC LIMIT 10`
 	rows, err := m.DB.Query(statement)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (m *MessageModel) Latest() ([]*Message, error) {
 	messages := []*Message{}
 	for rows.Next() {
 		mess := &Message{}
-		err := rows.Scan(&mess.ID, &mess.Title, &mess.Content, &mess.Created, &mess.CreatedAt)
+		err := rows.Scan(&mess.ID, &mess.Title, &mess.Content, &mess.Created)
 		if err != nil {
 			return nil, err
 		}
