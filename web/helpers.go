@@ -21,10 +21,13 @@ func (app *application) notFound(w http.ResponseWriter) {
 func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {
 	files := []string{
 		"./ui/templates/base.html",
-		"./ui/templates/partials/nav.html",
 		fmt.Sprintf("./ui/templates/pages/%s", page),
 	}
 	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+	}
+	ts, err = ts.ParseGlob("./ui/templates/partials/*.html")
 	if err != nil {
 		app.serverError(w, err)
 	}
