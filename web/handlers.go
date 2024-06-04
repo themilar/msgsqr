@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -11,7 +10,9 @@ import (
 )
 
 // like django views
+
 type templateData struct {
+	// acts like the context object used in views for dynamic template data
 	Message  *models.Message
 	Messages []*models.Message
 }
@@ -27,24 +28,9 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/templates/base.html",
-		"./ui/templates/pages/home.html",
-		"./ui/templates/partials/nav.html",
-	}
-	t, err := template.ParseFiles(files...)
-
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-	data := &templateData{
+	app.render(w, http.StatusOK, "home.html", &templateData{
 		Messages: messages,
-	}
-	err = t.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	})
 
 }
 func (app *application) messageDetail(w http.ResponseWriter, r *http.Request) {
@@ -62,24 +48,9 @@ func (app *application) messageDetail(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	files := []string{
-		"./ui/templates/base.html",
-		"./ui/templates/partials/nav.html",
-		"./ui/templates/pages/detail.html",
-	}
-	t, err := template.ParseFiles(files...)
-
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-	data := &templateData{
+	app.render(w, http.StatusOK, "detail.html", &templateData{
 		Message: message,
-	}
-	err = t.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	})
 }
 func (app *application) messageCreate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
