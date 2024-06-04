@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
@@ -18,12 +19,20 @@ func (app *application) clientError(w http.ResponseWriter, status int) {
 func (app *application) notFound(w http.ResponseWriter) {
 	app.clientError(w, http.StatusNotFound)
 }
+func humanizeDate(t time.Time) string {
+	return t.Format("23 Jan 2004 @ 32:42")
+}
+
+var tfunctions = template.FuncMap{
+	"humanizeDate": humanizeDate,
+}
+
 func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {
 	files := []string{
 		"./ui/templates/base.html",
 		fmt.Sprintf("./ui/templates/pages/%s", page),
 	}
-	ts, err := template.ParseFiles(files...)
+	ts, err := template.New(page).Funcs(tfunctions).ParseFiles(files...)
 	if err != nil {
 		app.serverError(w, err)
 	}
