@@ -20,7 +20,7 @@ func (app *application) notFound(w http.ResponseWriter) {
 	app.clientError(w, http.StatusNotFound)
 }
 func humanizeDate(t time.Time) string {
-	return t.Format("23 Jan 2004 @ 32:42")
+	return t.Format("02 Jan 2006 @ 15:04")
 }
 
 var tfunctions = template.FuncMap{

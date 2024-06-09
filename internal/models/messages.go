@@ -22,12 +22,12 @@ var ErrNoRecord error = errors.New("models: no matching record found")
 
 func (m *MessageModel) Insert(title, content string) (int, error) {
 	statement := `INSERT INTO message (title, content) VALUES ($1, $2) returning id;`
-	_, err := m.DB.Exec(statement, title, content)
-	if err != nil {
-		return 0, err
-	}
+	// _, err := m.DB.Exec(statement, title, content)
+	// if err != nil {
+	// 	return 0, err
+	// }
 	var id int
-	err = m.DB.QueryRow(statement, title, content).Scan(&id)
+	err := m.DB.QueryRow(statement, title, content).Scan(&id)
 	if err != nil {
 		return 0, err
 	}
