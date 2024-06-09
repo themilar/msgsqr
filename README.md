@@ -1,0 +1,2 @@
+# msgsqr
+Go web application
