@@ -55,7 +55,7 @@ func (app *application) messageDetail(w http.ResponseWriter, r *http.Request) {
 	})
 }
 func (app *application) messageCreate(w http.ResponseWriter, r *http.Request) {
-
+	// use conditionals instead of registering 2 separate handlers on the same route
 	if r.Method == http.MethodPost {
 		err := r.ParseForm()
 		if err != nil {
@@ -70,8 +70,36 @@ func (app *application) messageCreate(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		http.Redirect(w, r, fmt.Sprintf("/message/detail/%d", id), http.StatusSeeOther)
+	} else if r.Method == http.MethodGet {
+		app.render(w, http.StatusOK, "create.html", &templateData{})
 	}
 
-	app.render(w, http.StatusOK, "create.html", &templateData{})
-
+}
+func (app *application) messageDelete(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil {
+		app.notFound(w)
+		return
+	}
+	// this next block can be avoided with the ajax method
+	message, err := app.messages.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+	if r.Method == http.MethodPost {
+		_, err = app.messages.Remove(id)
+		if err != nil {
+			app.serverError(w, err)
+			return
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	} else if r.Method == http.MethodGet {
+		app.render(w, http.StatusOK, "delete.html", &templateData{Message: message})
+	}
 }

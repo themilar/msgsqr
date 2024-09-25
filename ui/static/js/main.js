@@ -6,3 +6,8 @@ for (var i = 0; i < navLinks.length; i++) {
 		break;
 	}
 }
+
+let deleteButton = document.querySelector("input.delete-button")
+deleteButton.addEventListener("click",e=>{
+	console.log("this button was clicked")
+})

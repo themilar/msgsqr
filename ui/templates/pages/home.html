@@ -11,7 +11,7 @@
     {{range .Messages}}
     <tr>
         <td><a href='/message/detail/{{.ID}}'>{{.Title}}</a></td>
-        <td>{{.Created.Hour }}:{{.Created.Minute}}</td>
+        <td>{{.Created.Hour }}:{{printf "%02d" .Created.Minute}}</td>
         <td>#{{.ID}}</td>
     </tr>
     {{end}}

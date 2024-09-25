@@ -70,3 +70,12 @@ func (m *MessageModel) Latest() ([]*Message, error) {
 	}
 	return messages, nil
 }
+
+func (m *MessageModel) Remove(id int) (int, error) {
+	statement := "DELETE FROM message WHERE id=$1 returning id"
+	err := m.DB.QueryRow(statement, id).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}

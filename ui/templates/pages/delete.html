@@ -1,0 +1,9 @@
+{{define "title"}}Delete page{{end}}
+
+{{define "main"}}
+
+<form action="" method="POST">
+    <p>Are you sure you want to delete this message "{{.Message.Title}}"?</p>
+    <input type="submit" value="Delete" class="delete-button">
+</form>
+{{end}}

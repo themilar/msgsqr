@@ -8,9 +8,16 @@
     </div>
     <pre><code>{{.Content}}</code></pre>
     <div class='metadata'>
+        <!-- current approach -->
+        <a href="/message/delete/{{.ID}}">Delete</a>
+        <!-- approach of using ajax to update the form without leaving the delete page -->
+        <!-- <form action="." method="delete">
+            <input type="button" value="Delete" class="delete-button" >
+        </form> -->
         <time>Created: {{.CreatedAt|humanizeDate}}</time>
         <!-- 2024-05-29 19:42:03.363441 +0100 WAT -->
     </div>
+
 </div>
 {{end}}
 {{end}}
