@@ -93,7 +93,7 @@ func (app *application) messageDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method == http.MethodPost {
-		_, err = app.messages.Remove(id)
+		err = app.messages.Remove(id)
 		if err != nil {
 			app.serverError(w, err)
 			return

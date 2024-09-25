@@ -71,11 +71,18 @@ func (m *MessageModel) Latest() ([]*Message, error) {
 	return messages, nil
 }
 
-func (m *MessageModel) Remove(id int) (int, error) {
-	statement := "DELETE FROM message WHERE id=$1 returning id"
-	err := m.DB.QueryRow(statement, id).Scan(&id)
+func (m *MessageModel) Remove(id int) error {
+	statement := "DELETE FROM message WHERE id=$1 "
+	result, err := m.DB.Exec(statement, id)
 	if err != nil {
-		return 0, err
+		return err
 	}
-	return id, nil
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return ErrNoRecord
+	}
+	return nil
 }
